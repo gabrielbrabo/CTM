@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Acompanhe as publicações da Prefeitura e da Câmara do seu município." />
+    <script>
+      // Aplica o tema e o tamanho de letra salvos antes de desenhar a pagina (evita "piscar" branco)
+      (function () {
+        try {
+          var t = localStorage.getItem("ctm-tema") || "sistema";
+          if (t === "escuro" || (t === "sistema" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.classList.add("dark");
+          }
+          // Tamanho da letra escolhido (A- / A+)
+          var f = Number(localStorage.getItem("ctm-fonte"));
+          if (f && f !== 100) document.documentElement.style.fontSize = f + "%";
+        } catch (e) {}
+      })();
+    </script>
+    <title>Diário Digital de Transparência Municipal</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
