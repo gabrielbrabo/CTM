@@ -7,7 +7,16 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# SPA: qualquer rota abre o index.html (React Router cuida do resto)
+# A API (Render) atende pelo mesmo endereco do site: /api/... vai para o Render.
+# Assim o login funciona em qualquer navegador (o cookie fica no proprio site)
+# e nao ha problema de CORS. Deixe VITE_API_URL vazio no Netlify.
+[[redirects]]
+  from = "/api/*"
+  to = "https://ctm-api-5x6b.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# SPA: qualquer outra rota abre o index.html (React Router cuida do resto)
 [[redirects]]
   from = "/*"
   to = "/index.html"

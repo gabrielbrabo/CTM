@@ -10,6 +10,15 @@ function obrigatoria(nome: string, padraoTeste?: string): string {
   throw new Error(`Variavel de ambiente ${nome} nao definida (veja o .env.example)`);
 }
 
+// Le CLIENT_URL tirando espacos e "/" no final (evita erro de CORS por detalhe)
+function urlsDoFront(): string[] {
+  const lista = (process.env.CLIENT_URL || "http://localhost:5173")
+    .split(",")
+    .map((u) => u.trim().replace(/\/+$/, ""))
+    .filter(Boolean);
+  return lista.length ? lista : ["http://localhost:5173"];
+}
+
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   isProd: process.env.NODE_ENV === "production",
@@ -18,7 +27,13 @@ export const env = {
   mongoUri: process.env.MONGODB_URI || obrigatoria("MONGO_URI", ""),
   jwtSecret: obrigatoria("JWT_SECRET", "segredo-teste"),
   jwtRefreshSecret: obrigatoria("JWT_REFRESH_SECRET", "segredo-refresh-teste"),
-  clientUrl: process.env.CLIENT_URL || "http://localhost:5173",
+  // Endereco(s) do front. Aceita varios separados por virgula; o primeiro e o principal (links)
+  clientUrls: urlsDoFront(),
+  get clientUrl() {
+    return this.clientUrls[0];
+  },
+  // Quantos proxies ficam na frente da API (Render = 1; Netlify + Render = 2)
+  trustProxy: Number(process.env.TRUST_PROXY) || 1,
   // Pasta dos anexos quando nao ha S3 (desenvolvimento)
   uploadsDir: process.env.UPLOADS_DIR || "uploads",
   // Amazon S3 (opcional). Credenciais: AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY no .env
