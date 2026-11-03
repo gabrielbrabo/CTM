@@ -20,7 +20,8 @@ export function criarApp() {
   // Necessario no Render/proxy para pegar o IP real e cookies "secure"
   app.set("trust proxy", env.trustProxy);
 
-  app.use(helmet());
+  // Permite que logos, fotos e anexos da API aparecam em <img> do site
+  app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
   app.use(cors({ origin: env.clientUrls, credentials: true }));
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());
